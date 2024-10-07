@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { User } from "../../types/User";
+import UserCard from "../UserCard/UserCard";
 import styles from './UserList.module.scss';
 
 interface UserListProps {
@@ -11,10 +12,7 @@ const UserList: React.FC<UserListProps> = ({ users }) => {
     <div className={styles.container}>
       <div className={styles.userList}>
         {users.map(user => (
-          <>
-            <div>{user.name}</div>
-            <div>{user.email}</div>
-          </>
+          <UserCard key={user.id} user={user} />
         ))}
       </div>
     </div>
