@@ -56,7 +56,7 @@ const UserList: React.FC<UserListProps> = ({ users }) => {
             />
           </Col>
           <Col>
-            <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end mt-4 mt-lg-0">
               
               <Dropdown onSelect={handleSort} className="me-2" data-bs-theme="dark">
                 <Dropdown.Toggle variant="primary" id="dropdown-sortBy" size="lg" className={styles.btnSortBy}>
