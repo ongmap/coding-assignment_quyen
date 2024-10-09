@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { User } from "../../types/User";
 import UserCard from "../UserCard/UserCard";
 import styles from './UserList.module.scss';
-import { Col, Row } from 'react-bootstrap';
+import { Container, Row, Col, Form } from 'react-bootstrap';
+import Dropdown from 'react-bootstrap/Dropdown';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 
 interface UserListProps {
   users: User[];
@@ -17,17 +20,19 @@ const UserList: React.FC<UserListProps> = ({ users }) => {
     setFilter(e.target.value.toLowerCase());
   };
 
-  const handleSort = (field: string) => {
-    setSortField(field);
-    setSortOrder(!sortOrder);
+  const handleSort = (eventKey: string | null) => {
+    if (eventKey) {
+      setSortField(eventKey);
+    }
   };
 
   const filteredUsers = users
     .filter(user => 
-      user.name.toLowerCase().includes(filter) || 
+      user.name.toLowerCase().includes(filter) ||
       user.email.toLowerCase().includes(filter) ||
       user.phone.toLowerCase().includes(filter) ||
-      user.website.toLowerCase().includes(filter)
+      user.website.toLowerCase().includes(filter) ||
+      `${user.address.street} ${user.address.suite} ${user.address.city} ${user.address.zipcode}`.toLowerCase().includes(filter)
     )
     .sort((a, b) => {
       const fieldA = a[sortField as keyof User].toString().toLowerCase();
@@ -38,32 +43,56 @@ const UserList: React.FC<UserListProps> = ({ users }) => {
     });
 
   return (
-    <div className={styles.container}>
-      <div className={styles.controls}>
-        <input 
-          type="text" 
-          placeholder="Filter users..." 
-          value={filter} 
-          onChange={handleFilterChange}
-          className="form-control mb-3"
-        />
-        <div className={styles.sortButtons}>
-          <button className="btn btn-primary me-2" onClick={() => handleSort('name')}>Sort by Name</button>
-          <button className="btn btn-primary" onClick={() => handleSort('email')}>Sort by Email</button>
-          <button className="btn btn-secondary" onClick={() => setSortOrder(!sortOrder)}>
-            {sortOrder ? "Descending" : "Ascending"}
-          </button>
-        </div>
-      </div>
-
-      <Row xs={1} md={2} lg={3} className="g-4">
-        {filteredUsers.map(user => (
-          <Col key={user.id}>
-            <UserCard user={user} />
+    <Container>
+      
+        <Row xs={1} md={1} lg={2} className="mb-4">
+          <Col>
+            <Form.Control
+              type="text"
+              placeholder="Filter user ..."
+              value={filter} 
+              onChange={handleFilterChange}
+              size="lg"
+            />
           </Col>
-        ))}
-      </Row>
-    </div>
+          <Col>
+            <div className="d-flex justify-content-end">
+              
+              <Dropdown onSelect={handleSort} className="me-2" data-bs-theme="dark">
+                <Dropdown.Toggle variant="primary" id="dropdown-sortBy" size="lg" className={styles.btnSortBy}>
+                  Sort by {sortField === 'name' ? 'name' : 'email'}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item eventKey="name">Sort by name</Dropdown.Item>
+                  <Dropdown.Item eventKey="email">Sort by email</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+
+              <button className={`btn btn-light btn-lg ${styles.btnSortOrder}`} onClick={() => setSortOrder(!sortOrder)}>
+                {sortOrder 
+                  ? (<>Descending <FontAwesomeIcon icon={faArrowDown} /></>)
+                  : (<>Ascending <FontAwesomeIcon icon={faArrowUp} /></>)
+                }
+              </button>
+            </div>
+          </Col>
+        </Row>
+
+        <hr />
+
+        {filteredUsers.length === 0 ? (
+          <p className={styles.noUsersFound}>No users found!</p>
+        ) : (
+          <Row xs={1} md={2} lg={3} className="g-4 mt-3">
+            {filteredUsers.map(user => (
+              <Col key={user.id}>
+                <UserCard user={user} />
+              </Col>
+            ))}
+          </Row>
+        )}
+    </Container>
   );
 };
 
