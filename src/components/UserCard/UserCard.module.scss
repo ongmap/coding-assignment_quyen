@@ -1,20 +1,25 @@
-.card {
+.userCard {
   padding: 1rem;
   border: 1px solid #ddd;
   border-radius: 8px;
   margin-bottom: 1rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   background-color: white;
-  height: 100%;
+  text-align: left;
+  // height: 100%; // break when only 1 item on screen
+}
 
+.cardTitle {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.cardText {
+  margin-bottom: 5px;
   a {
     color: #3498db;
     text-decoration: none;
   }
 }
 
-.companyInfo {
-  border-top: 1px solid #ddd;
-  padding: 10px;
-  margin-top: 10px;
-}
+
